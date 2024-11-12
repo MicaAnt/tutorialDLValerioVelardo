@@ -1,5 +1,5 @@
 from tensorflow.keras import Model
-from tensorflow.keras.layers import Input, Conv2D, ReLU
+from tensorflow.keras.layers import Input, Conv2D, ReLU, BatchNormalization, Flatten, Dense
 
 class Autoencoder:
 
@@ -64,4 +64,12 @@ def _add_conv_layer(self, layer_index, x): # essa funcao nao tem s no nome, cois
         name = f"encoder_conv_layer_{layer_number}"
     )
     x = conv_layer(x)
+    x = ReLU(name=f"encoder_relu_{layer_number}")(x)
+    x = BatchNormalization(name=f"encoder_bn_{layer_number}")(x)
+    return(x)
 
+def _add_bottleneck(self, x):
+    """Flatten data and add bottleneck (Dense layer)."""
+    x = Flatten()(x)
+    x = Dense(self.latent_space_dim, name= "encoder_output")(x)
+    return x
