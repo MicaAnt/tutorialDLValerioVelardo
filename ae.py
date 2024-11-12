@@ -1,1 +1,6 @@
-# testando se as ateracoes vao aparecer no github
+class Autoencoder:
+
+    """
+    Autoencoder represents a Deep Concolutional autoencoder architeture with mirrored encoder and decoder components.
+    """
+
