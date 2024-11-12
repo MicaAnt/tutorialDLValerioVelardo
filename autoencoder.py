@@ -1,6 +1,7 @@
 from tensorflow.keras import Model
-from tensorflow.keras.layers import Input, Conv2D, ReLU, BatchNormalization, Flatten, Dense
+from tensorflow.keras.layers import Input, Conv2D, ReLU, BatchNormalization, Flatten, Dense, Reshape
 from tensorflow.keras import backend as K
+import numpy as np
 
 class Autoencoder:
 
@@ -46,6 +47,22 @@ class Autoencoder:
         decoder_output = self._add_decoder_output(conv_transpose_layers)
         self.decoder = Model(decoder_input, decoder_output, name="decoder")
 
+    def _add_decoder_input(self):
+        return Input(shape=self.latent_space_dim, name="decoder_input")
+
+    def _add_dense_layer(self, decoder_input):
+        # num_neurons = self._shape_before_bottleneck # original tem [1, 2, 4]
+        # mas a gente quer flatten, queremos multiplicas 1 * 2 * 4 = 8
+        # vamos usar o numpy :) portanto:
+        num_neurons = np.prod(self._shape_before_bottleneck)
+        dense_layer = Dense(num_neurons, name="decoder_dense")(decoder_input)
+        return dense_layer
+
+    def _add_reshape_layer(self, dense_layer):
+        return Reshape(self._shape_before_bottleneck)(dense_layer)
+
+# Encoder
+# _______________________________________
     def _build_encoder(self):
         encoder_input = self._add_encoder_input()
         conv_layers = self._add_conv_layers(encoder_input)
