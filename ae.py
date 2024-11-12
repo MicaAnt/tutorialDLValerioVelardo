@@ -1,5 +1,6 @@
 from tensorflow.keras import Model
 from tensorflow.keras.layers import Input, Conv2D, ReLU, BatchNormalization, Flatten, Dense
+from tensorflow.keras import backend as K
 
 class Autoencoder:
 
@@ -70,6 +71,10 @@ def _add_conv_layer(self, layer_index, x): # essa funcao nao tem s no nome, cois
 
 def _add_bottleneck(self, x):
     """Flatten data and add bottleneck (Dense layer)."""
+    self._shape_before_bottleneck = K.int_shape(x)[1:] # ele recebe 4 valores [2, 7, 7, 28], sendo que o primeiro é o batch size
+    # como a gente não ta interessado no batch size, ele colocou o slice pra receber apenas [7, 7, 28]
     x = Flatten()(x)
     x = Dense(self.latent_space_dim, name= "encoder_output")(x)
     return x
+
+
