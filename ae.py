@@ -1,5 +1,5 @@
 from tensorflow.keras import Model
-from tensorflow.keras.layers import Input
+from tensorflow.keras.layers import Input, Conv2D, ReLU
 
 class Autoencoder:
 
@@ -37,8 +37,31 @@ def _build_encoder(self):
     encoder_input = self._add_encoder_input()
     conv_layers = self._add_conv_layers(encoder_input)
     bottleneck = self._add_bottleneck(conv_layers)
-    self.encoder = Model(encoder_input, bottleneck, name="encoder")
+    self.encoder = Model(encoder_input, bottleneck, name="encoder") # pra isso, ele importou a funcao Model do keras
 
+def _add_encoder_input(self): # pra isso ele importou a funcao Input do keras
+    return Input(shape=self.input_shape, name="encoder_input") # parametro que está sendo passado no init
 
+# ele vai chamar o que vem abaixo de method, provavelmente outras coisas tb, mas isso me chamou a atencao 
 
+def _add_conv_layers(self, encoder_input):
+    """Creates all convolutional blocks in encoder."""
+    x = encoder_input
+    for layer_index in range(self._num_conv_layers):
+        x = self._add_conv_layer(layer_index, x)
+    return x 
+
+def _add_conv_layer(self, layer_index, x): # essa funcao nao tem s no nome, coisa de corno
+    """
+    Adds a convolutional block to a graph of layers, cosisting of conv 2d + ReLU + batch normalization
+    """
+    layer_number = layer_index + 1
+    conv_layer = Conv2D(     # esta importado la em cima
+        filters = self.conv_filters[layer_index],
+        kernel_size = self.conv_kernels[layer_index],
+        strides = self.conv_strides[layer_index],
+        padding = "same",
+        name = f"encoder_conv_layer_{layer_number}"
+    )
+    x = conv_layer(x)
 
