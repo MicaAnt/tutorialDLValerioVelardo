@@ -80,7 +80,7 @@ def _add_bottleneck(self, x):
     x = Dense(self.latent_space_dim, name= "encoder_output")(x)
     return x
 
-if __name__ = "__main__":
+if __name__ == "__main__":
     autoencoder = Autoencoder(
         input_shape = (28, 28, 1),
         conv_filters = (32, 64, 64, 64),
